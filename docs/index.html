@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sakhtban — قبل از بحران ببین.</title>
+<meta name="description" content="کوپایلوت هوشمند کنترل پروژه‌های ساختمانی و عمرانی در ایران. تشخیص زودهنگام انحراف، Risk Heatmap زنده و Action Item خودکار.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1220;
+    --bg-alt:#111a2e;
+    --card:#151f36;
+    --border:#22304d;
+    --text:#e7ecf7;
+    --muted:#9aa7c2;
+    --accent:#f5a524;
+    --green:#2ecc71;
+    --yellow:#f1c40f;
+    --red:#e74c3c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Vazirmatn', Tahoma, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.9;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  header.hero{
+    padding:90px 0 70px;
+    text-align:center;
+    background:radial-gradient(circle at 50% -10%, #1b2947 0%, var(--bg) 60%);
+    border-bottom:1px solid var(--border);
+  }
+  .hero h1{
+    font-size:2.6rem;
+    font-weight:900;
+    margin:0 0 10px;
+  }
+  .hero .tagline{
+    color:var(--accent);
+    font-size:1.4rem;
+    font-weight:700;
+    margin-bottom:24px;
+  }
+  .hero p{
+    color:var(--muted);
+    font-size:1.1rem;
+    max-width:680px;
+    margin:0 auto 32px;
+  }
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;
+    padding:13px 28px;
+    border-radius:10px;
+    font-weight:700;
+    text-decoration:none;
+    font-size:1rem;
+  }
+  .btn.primary{background:var(--accent);color:#1a1300;}
+  .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border);}
+  section{padding:70px 0;border-bottom:1px solid var(--border);}
+  section h2{font-size:1.7rem;font-weight:900;margin-bottom:8px;}
+  section .lead{color:var(--muted);margin-bottom:36px;max-width:680px;}
+  .quote{
+    border-right:4px solid var(--accent);
+    padding:16px 20px;
+    background:var(--bg-alt);
+    border-radius:6px;
+    color:var(--muted);
+    margin-top:24px;
+  }
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:760px){.grid3{grid-template-columns:1fr;}}
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:26px;
+  }
+  .card .dot{
+    width:12px;height:12px;border-radius:50%;margin-bottom:14px;
+  }
+  .dot.red{background:var(--red);}
+  .dot.yellow{background:var(--yellow);}
+  .dot.green{background:var(--green);}
+  .card h3{margin:0 0 8px;font-size:1.05rem;}
+  .card p{margin:0;color:var(--muted);font-size:.95rem;}
+  .wedge-box{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:36px;
+    text-align:center;
+  }
+  .wedge-box .not{color:var(--muted);font-size:.95rem;margin-bottom:14px;}
+  .wedge-box .yes{
+    font-size:1.25rem;
+    font-weight:700;
+    color:var(--text);
+  }
+  ul.reasons{margin:0;padding-inline-start:20px;color:var(--muted);}
+  ul.reasons li{margin-bottom:10px;}
+  .links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+  .link-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    text-decoration:none;
+    color:var(--text);
+    display:block;
+  }
+  .link-card:hover{border-color:var(--accent);}
+  .link-card .emoji{font-size:1.4rem;margin-bottom:8px;display:block;}
+  .link-card .label{font-weight:700;}
+  footer{padding:40px 0;text-align:center;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Sakhtban</h1>
+    <div class="tagline">قبل از بحران ببین.</div>
+    <p>کوپایلوت هوشمند کنترل پروژه‌های ساختمانی و عمرانی. گزارش‌های پراکنده‌ی کارگاه، برنامه‌ی زمان‌بندی، هزینه و خرید را می‌خواند و قبل از آن‌که یک انحراف کوچک به بحران چندهفته‌ای تبدیل شود، هشدار قابل‌اقدام می‌دهد.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/massoudsh/sakhtban/wiki">مشاهده‌ی محصول در Wiki</a>
+      <a class="btn secondary" href="https://github.com/massoudsh/sakhtban">ریپوی گیت‌هاب</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>مسئله</h2>
+    <p class="lead">پروژه‌ی ساختمانی یک‌باره از کنترل خارج نمی‌شود — آرام‌آرام خارج می‌شود. یک خرید دیر انجام می‌شود، یک پیمانکار عقب می‌افتد، یک گزارش هفتگی کمی خوش‌بینانه نوشته می‌شود. چند هفته بعد همه می‌فهمند پروژه عقب افتاده — اما آن‌موقع اصلاح گران و دیر شده است.</p>
+    <div class="quote">پروژه‌های ساختمانی ایران یک لایه‌ی واحد ندارند که برنامه، واقعیت کارگاه، هزینه و خرید را به هم وصل کند — و قبل از تبدیل انحراف به بحران، هشدار قابل‌اقدام بدهد.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>راه‌حل</h2>
+    <p class="lead">Sakhtban داده‌های پراکنده‌ی پروژه را می‌خواند، ساختاردهی می‌کند، با واقعیت اجرا مقایسه می‌کند و به زبان ساده می‌گوید:</p>
+    <div class="grid3">
+      <div class="card">
+        <div class="dot red"></div>
+        <h3>اینجا دارد خراب می‌شود</h3>
+        <p>تشخیص زودهنگام انحراف، پیش از آن‌که در گزارش هفتگی دیده شود.</p>
+      </div>
+      <div class="card">
+        <div class="dot yellow"></div>
+        <h3>اینجا باید تصمیم بگیری</h3>
+        <p>Action item مشخص و قابل‌اجرا، نه یک گزارش دیگر برای خواندن.</p>
+      </div>
+      <div class="card">
+        <div class="dot green"></div>
+        <h3>اگر کاری نکنی، سه هفته بعد بحران می‌شود</h3>
+        <p>پیش‌بینی اثر زنجیره‌ای تأخیر روی کل پروژه.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>چرا الان و چرا AI</h2>
+    <ul class="reasons">
+      <li>تورم و نوسان قیمت مصالح → هر روز تأخیر گران‌تر از قبل است</li>
+      <li>چندپیمانکاری و هماهنگی دستی → ریسک bottleneck پنهان زیاد است</li>
+      <li>ابزارهای موجود (Primavera، اکسل) ثبت می‌کنند، هشدار نمی‌دهند</li>
+      <li>AI می‌تواند گزارش‌های انسانی نامنظم را بخواند و الگوی انحراف را زودتر از چشم انسان ببیند</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>نقطه‌ی ورود</h2>
+    <div class="wedge-box">
+      <div class="not">نه ERP، نه جایگزین Primavera</div>
+      <div class="yes">تبدیل گزارش‌های پراکنده‌ی هفتگی/روزانه به Risk Heatmap و لیست Action Item</div>
+    </div>
+  </div>
+</section>
+
+<section style="border-bottom:none;">
+  <div class="wrap">
+    <h2>لینک‌های پروژه</h2>
+    <div class="links-grid">
+      <a class="link-card" href="https://github.com/massoudsh/sakhtban/wiki">
+        <span class="emoji">📖</span>
+        <span class="label">Wiki</span>
+      </a>
+      <a class="link-card" href="https://github.com/massoudsh/sakhtban/milestones">
+        <span class="emoji">🗺️</span>
+        <span class="label">Roadmap</span>
+      </a>
+      <a class="link-card" href="https://github.com/massoudsh/sakhtban/issues">
+        <span class="emoji">✅</span>
+        <span class="label">Issues</span>
+      </a>
+      <a class="link-card" href="https://github.com/massoudsh/sakhtban">
+        <span class="emoji">💻</span>
+        <span class="label">GitHub Repo</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Sakhtban — قبل از بحران ببین.
+</footer>
+
+</body>
+</html>
