@@ -29,10 +29,14 @@ Sakhtban داده‌های پراکنده‌ی پروژه را می‌خواند
 
 کنار انحراف زمان‌بندی/هزینه، Sakhtban صورت‌جلسه‌ها، نامه‌ها و مکاتبات پروژه را می‌خواند، تصمیم‌ها و مسئول‌ها را استخراج می‌کند و ابهام‌های پرریسک (تأیید ناقص، اثر مالی ثبت‌نشده، تناقض بین اسناد) را قبل از تبدیل‌شدن به اختلاف نشان می‌دهد — مستقیم داخل همان Risk Heatmap، نه یک ابزار جدا. جزئیات در [Decision Log](https://github.com/massoudsh/sakhtban/wiki/Decision-Log).
 
+## لایه‌ی سوم: QA Copilot و کنترل کیفیت اجرا
+
+منبع سوم ریسک، کیفیت اجرا است. Sakhtban کنترل کیفیت را موبایل‌محور می‌کند: عکس ایراد، محل روی نقشه، مسئول اصلاح، قبل/بعد اصلاح، و punch list خودکار — و از دل آن الگوی تکرار (کدام پیمانکار بیشترین rework، کدام طبقه بیشترین ایراد باز دارد) را استخراج می‌کند، مستقیم داخل همان Risk Heatmap. جزئیات در [QA Copilot](https://github.com/massoudsh/sakhtban/wiki/QA-Copilot).
+
 ## مستندات و لینک‌های پروژه
 
 - 📖 [Wiki](https://github.com/massoudsh/sakhtban/wiki) — معرفی محصول، roadmap کامل، برند
-- 🗺️ [Roadmap / Milestones](https://github.com/massoudsh/sakhtban/milestones) — ۵ فاز توسعه
+- 🗺️ [Roadmap / Milestones](https://github.com/massoudsh/sakhtban/milestones) — ۶ فاز توسعه
 - ✅ [Issues](https://github.com/massoudsh/sakhtban/issues) — بک‌لاگ فعلی
 - 🌐 [Landing Page](https://massoudsh.github.io/sakhtban/) — صفحه‌ی معرفی محصول
 
