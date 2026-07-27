@@ -25,10 +25,14 @@ Sakhtban داده‌های پراکنده‌ی پروژه را می‌خواند
 
 نه ERP، نه جایگزین Primavera. نقطه‌ی ورود ساده است: **تبدیل گزارش‌های پراکنده‌ی هفتگی/روزانه به risk heatmap و لیست action item.**
 
+## لایه‌ی دوم: Decision Log و پیشگیری از اختلاف
+
+کنار انحراف زمان‌بندی/هزینه، Sakhtban صورت‌جلسه‌ها، نامه‌ها و مکاتبات پروژه را می‌خواند، تصمیم‌ها و مسئول‌ها را استخراج می‌کند و ابهام‌های پرریسک (تأیید ناقص، اثر مالی ثبت‌نشده، تناقض بین اسناد) را قبل از تبدیل‌شدن به اختلاف نشان می‌دهد — مستقیم داخل همان Risk Heatmap، نه یک ابزار جدا. جزئیات در [Decision Log](https://github.com/massoudsh/sakhtban/wiki/Decision-Log).
+
 ## مستندات و لینک‌های پروژه
 
 - 📖 [Wiki](https://github.com/massoudsh/sakhtban/wiki) — معرفی محصول، roadmap کامل، برند
-- 🗺️ [Roadmap / Milestones](https://github.com/massoudsh/sakhtban/milestones) — ۴ فاز توسعه
+- 🗺️ [Roadmap / Milestones](https://github.com/massoudsh/sakhtban/milestones) — ۵ فاز توسعه
 - ✅ [Issues](https://github.com/massoudsh/sakhtban/issues) — بک‌لاگ فعلی
 - 🌐 [Landing Page](https://massoudsh.github.io/sakhtban/) — صفحه‌ی معرفی محصول
 
