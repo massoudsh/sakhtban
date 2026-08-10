@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     telegram_bot_token: str | None = None
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    upload_dir: str = "uploads"
+    upload_public_path: str = "/files"
+    max_upload_size_mb: int = 20
+
 
 @lru_cache
 def get_settings() -> Settings:

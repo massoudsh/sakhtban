@@ -1,16 +1,40 @@
 /**
  * صف آفلاین برای ثبت ایراد (issue #22 — «باید آفلاین‌فرست کار کند، اینترنت ضعیف کارگاه»).
  *
- * وقتی اتصال نیست یا درخواست شکست می‌خورد، آیتم در AsyncStorage صف می‌شود.
- * با برگشت اتصال (NetInfo) یا فراخوانی دستی flushQueue، صف به‌ترتیب به API فرستاده می‌شود.
- *
- * نکته‌ی صادقانه: photo_before_url/voice_note_url در این مرحله همان URI محلی دستگاه
- * است (نه لینک عمومی روی object storage). آپلود واقعی فایل به S3/MinIO یک تصمیم
- * زیرساختی جداست که در specs/issue-22.md مستند شده و خارج از این تسک است.
+ * وقتی اتصال نیست یا درخواست شکست می‌خورد، آیتم (با URI محلی عکس/صدا) در AsyncStorage
+ * صف می‌شود. با برگشت اتصال (NetInfo) یا فراخوانی دستی flushQueue، صف به‌ترتیب پردازش
+ * می‌شود: هر آیتم ابتدا فایل‌های محلی (`file://...`) را به سرور آپلود می‌کند (`POST /uploads`)
+ * و URL برگشتی را جایگزین می‌کند، سپس ایراد را با URLهای واقعی ثبت می‌کند. اگر آپلود هم
+ * شکست بخورد (مثلاً هنوز آفلاین)، آیتم با URI محلی در صف می‌ماند تا تلاش بعدی.
  */
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
-import { api, type DefectCreate } from "./api";
+import { api, uploadFile, type DefectCreate } from "./api";
+
+/** فایل‌های محلی روی دستگاه هنوز آپلود نشده‌اند (`file://` است، نه URL سرور). */
+function isLocalUri(uri: string | null | undefined): uri is string {
+  return !!uri && (uri.startsWith("file://") || uri.startsWith("content://") || uri.startsWith("ph://"));
+}
+
+/** عکس/صدای محلی را آپلود می‌کند و آدرس سرور را جایگزین payload می‌کند. */
+async function resolveLocalUploads(payload: DefectCreate): Promise<DefectCreate> {
+  const resolved = { ...payload };
+  if (isLocalUri(resolved.photo_before_url)) {
+    const { url } = await uploadFile(resolved.project_id, resolved.photo_before_url, "photo");
+    resolved.photo_before_url = url;
+  }
+  if (isLocalUri(resolved.voice_note_url)) {
+    const { url } = await uploadFile(resolved.project_id, resolved.voice_note_url, "voice");
+    resolved.voice_note_url = url;
+  }
+  return resolved;
+}
+
+/** آپلود فایل‌های محلی (در صورت وجود) + ثبت ایراد. برای ارسال فوری و flush صف مشترک است. */
+async function sendDefect(payload: DefectCreate): Promise<void> {
+  const resolved = await resolveLocalUploads(payload);
+  await api.reportDefect(resolved);
+}
 
 const QUEUE_KEY = "sakhtban_defect_queue";
 
@@ -51,7 +75,7 @@ export async function submitOrQueue(payload: DefectCreate): Promise<{ sentNow: b
   const netState = await NetInfo.fetch();
   if (netState.isConnected && netState.isInternetReachable !== false) {
     try {
-      await api.reportDefect(payload);
+      await sendDefect(payload);
       return { sentNow: true };
     } catch {
       await enqueueDefect(payload);
@@ -72,7 +96,7 @@ export async function flushQueue(): Promise<{ sent: number; remaining: number }>
 
   for (const item of queue) {
     try {
-      await api.reportDefect(item.payload);
+      await sendDefect(item.payload);
       sent += 1;
     } catch (err) {
       stillQueued.push({ ...item, lastError: err instanceof Error ? err.message : "خطای نامشخص" });

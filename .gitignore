@@ -43,3 +43,7 @@ tsconfig.tsbuildinfo
 
 # OS
 Thumbs.db
+
+# Uploaded files (local disk storage backend, not committed)
+backend/uploads/
+uploads/

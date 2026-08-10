@@ -53,6 +53,44 @@ export interface DefectOut extends DefectCreate {
   reopened_count: number;
 }
 
+export type UploadKind = "photo" | "voice";
+
+export interface UploadOut {
+  url: string;
+  content_type: string;
+  size_bytes: number;
+}
+
+/**
+ * آپلود فایل محلی (عکس/صدا) به سرور — چون multipart است از `apiFetch` (که همیشه
+ * Content-Type: application/json می‌فرستد) استفاده نمی‌کند؛ Content-Type دستی هم
+ * ست نمی‌شود تا خود fetch مرز (boundary) مالتی‌پارت را تعیین کند.
+ */
+export async function uploadFile(projectId: string, localUri: string, kind: UploadKind): Promise<UploadOut> {
+  const token = await tokenStorage.get();
+  const fallbackName = kind === "photo" ? "photo.jpg" : "voice.m4a";
+  const fallbackType = kind === "photo" ? "image/jpeg" : "audio/m4a";
+  const name = localUri.split("/").pop() || fallbackName;
+
+  const formData = new FormData();
+  // @ts-expect-error -- شکل آبجکت فایل مخصوص React Native است، نه Blob استاندارد وب.
+  formData.append("file", { uri: localUri, name, type: fallbackType });
+
+  const headers = new Headers();
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+
+  const res = await fetch(`${API_BASE_URL}/uploads/${projectId}?kind=${kind}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`آپلود فایل ناموفق (${res.status}): ${body}`);
+  }
+  return (await res.json()) as UploadOut;
+}
+
 export const api = {
   login: (email: string, password: string) =>
     apiFetch<{ access_token: string; token_type: string }>("/auth/login", {
@@ -65,4 +103,5 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  uploadFile,
 };
