@@ -10,6 +10,7 @@ from app.core.database import get_db
 from app.models.schedule import ScheduleImport, ScheduleSource, ScheduleTask, TaskDependency, TaskStatus
 from app.schemas.schedule import ScheduleTaskOut
 from app.services.deviation_engine import detect_schedule_deviations
+from app.services.risk_heatmap import risk_item_from_deviation
 from app.services.schedule_import.msproject_parser import parse_mspdi_xml
 from app.services.schedule_import.xer_parser import parse_xer
 
@@ -127,14 +128,19 @@ def list_tasks(project_id: uuid.UUID, db: Session = Depends(get_db)) -> list[Sch
 @router.post("/{project_id}/detect-deviations")
 def run_deviation_detection(project_id: uuid.UUID, db: Session = Depends(get_db)) -> dict:
     """اجرای موتور تشخیص انحراف (issue #3) روی همه‌ی فعالیت‌های پروژه."""
-    from app.models.deviation import Deviation
+    from app.models.deviation import Deviation, DeviationSeverity
 
     tasks = list(db.scalars(select(ScheduleTask).where(ScheduleTask.project_id == project_id)))
     if not tasks:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "فعالیتی برای این پروژه یافت نشد.")
 
+    # فقط انحراف‌های medium به بالا وارد Risk Heatmap می‌شوند تا با آستانه‌ی
+    # تولید Action Item (issue #5) و بقیه‌ی منابع ریسک (issue #19, #25) همسان بماند.
+    risk_worthy = {DeviationSeverity.MEDIUM, DeviationSeverity.HIGH, DeviationSeverity.CRITICAL}
+
     detected = detect_schedule_deviations(tasks, as_of=date.today())
     created = []
+    risk_items_created = 0
     for d in detected:
         deviation = Deviation(
             project_id=project_id,
@@ -145,7 +151,12 @@ def run_deviation_detection(project_id: uuid.UUID, db: Session = Depends(get_db)
             description=d.description,
         )
         db.add(deviation)
+        db.flush()
         created.append(deviation)
 
+        if deviation.severity in risk_worthy:
+            db.add(risk_item_from_deviation(deviation))
+            risk_items_created += 1
+
     db.commit()
-    return {"deviations_created": len(created)}
+    return {"deviations_created": len(created), "risk_items_created": risk_items_created}
