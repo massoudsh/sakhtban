@@ -123,6 +123,21 @@
   .link-card .emoji{font-size:1.4rem;margin-bottom:8px;display:block;}
   .link-card .label{font-weight:700;}
   footer{padding:40px 0;text-align:center;color:var(--muted);font-size:.9rem;}
+  form.pilot-form{display:grid;gap:14px;max-width:480px;margin:0 auto;text-align:right;}
+  form.pilot-form label{font-size:.9rem;color:var(--muted);display:block;margin-bottom:6px;}
+  form.pilot-form input,form.pilot-form textarea{
+    width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--border);
+    background:var(--bg-alt);color:var(--text);font-family:inherit;font-size:.95rem;
+  }
+  form.pilot-form textarea{resize:vertical;min-height:70px;}
+  form.pilot-form button{
+    background:var(--accent);color:#1a1300;border:none;border-radius:10px;
+    padding:13px 28px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;
+  }
+  form.pilot-form button:disabled{opacity:.6;cursor:not-allowed;}
+  .form-msg{font-size:.9rem;margin-top:8px;min-height:1.2em;}
+  .form-msg.ok{color:var(--green);}
+  .form-msg.err{color:var(--red);}
 </style>
 </head>
 <body>
@@ -133,7 +148,7 @@
     <div class="tagline">قبل از بحران ببین.</div>
     <p>کوپایلوت هوشمند کنترل پروژه‌های ساختمانی و عمرانی. گزارش‌های پراکنده‌ی کارگاه، برنامه‌ی زمان‌بندی، هزینه و خرید را می‌خواند و قبل از آن‌که یک انحراف کوچک به بحران چندهفته‌ای تبدیل شود، هشدار قابل‌اقدام می‌دهد.</p>
     <div class="cta-row">
-      <a class="btn primary" href="https://github.com/massoudsh/sakhtban/wiki">مشاهده‌ی محصول در Wiki</a>
+      <a class="btn primary" href="#pilot-form">درخواست پایلوت</a>
       <a class="btn secondary" href="https://github.com/massoudsh/sakhtban">ریپوی گیت‌هاب</a>
     </div>
   </div>
@@ -241,6 +256,37 @@
   </div>
 </section>
 
+<section id="pilot-form">
+  <div class="wrap">
+    <h2>درخواست پایلوت</h2>
+    <p class="lead">۲-۳ پروژه‌ی پایلوت واقعی می‌پذیریم. اطلاعات پروژه‌تان را بفرستید تا هماهنگ کنیم.</p>
+    <form class="pilot-form" id="pilot-lead-form">
+      <div>
+        <label for="company_name">نام شرکت / کارفرما</label>
+        <input id="company_name" name="company_name" type="text" required>
+      </div>
+      <div>
+        <label for="contact_name">نام مسئول تماس</label>
+        <input id="contact_name" name="contact_name" type="text" required>
+      </div>
+      <div>
+        <label for="phone">تلفن تماس</label>
+        <input id="phone" name="phone" type="tel" required>
+      </div>
+      <div>
+        <label for="email">ایمیل (اختیاری)</label>
+        <input id="email" name="email" type="email">
+      </div>
+      <div>
+        <label for="message">توضیح پروژه (اختیاری)</label>
+        <textarea id="message" name="message"></textarea>
+      </div>
+      <button type="submit">ارسال درخواست</button>
+      <div class="form-msg" id="pilot-form-msg"></div>
+    </form>
+  </div>
+</section>
+
 <section style="border-bottom:none;">
   <div class="wrap">
     <h2>لینک‌های پروژه</h2>
@@ -269,5 +315,40 @@
   Sakhtban — قبل از بحران ببین.
 </footer>
 
+<script>
+  // API_BASE باید بعد از استقرار بک‌اند روی سرور اینجا تنظیم شود (مثلاً https://api.sakhtban.ir).
+  var API_BASE = window.SAKHTBAN_API_BASE || 'https://api.sakhtban.ir';
+  var form = document.getElementById('pilot-lead-form');
+  var msgEl = document.getElementById('pilot-form-msg');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = form.querySelector('button');
+    var payload = {
+      company_name: form.company_name.value.trim(),
+      contact_name: form.contact_name.value.trim(),
+      phone: form.phone.value.trim(),
+      email: form.email.value.trim() || null,
+      message: form.message.value.trim() || null
+    };
+    btn.disabled = true;
+    msgEl.className = 'form-msg';
+    msgEl.textContent = 'در حال ارسال...';
+    fetch(API_BASE + '/onboarding/pilot-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (!res.ok) throw new Error('request-failed');
+      form.reset();
+      msgEl.className = 'form-msg ok';
+      msgEl.textContent = 'درخواست ثبت شد — به‌زودی با شما تماس می‌گیریم.';
+    }).catch(function () {
+      msgEl.className = 'form-msg err';
+      msgEl.textContent = 'ارسال با خطا مواجه شد. می‌توانید مستقیم با ما تماس بگیرید.';
+    }).finally(function () {
+      btn.disabled = false;
+    });
+  });
+</script>
 </body>
 </html>
