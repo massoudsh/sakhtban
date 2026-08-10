@@ -39,8 +39,12 @@ class Defect(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     location: Mapped[str] = mapped_column(String(255))  # طبقه/زون/اتاق
     photo_before_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     photo_after_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    voice_note_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)  # توضیح صوتی (اپ موبایل، issue #22)
     gps_lat: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     gps_lng: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
+    # موقعیت نسبی روی تصویر پلان طبقه (۰ تا ۱) — برای داخل ساختمان که GPS دقیق نیست (issue #22)
+    floor_plan_x: Mapped[float | None] = mapped_column(Numeric(5, 4), nullable=True)
+    floor_plan_y: Mapped[float | None] = mapped_column(Numeric(5, 4), nullable=True)
 
     severity: Mapped[DefectSeverity] = mapped_column(Enum(DefectSeverity), default=DefectSeverity.MINOR)
     status: Mapped[DefectStatus] = mapped_column(Enum(DefectStatus), default=DefectStatus.OPEN)

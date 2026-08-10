@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "سخت‌بان QA",
+    "slug": "sakhtban-qa",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "برای ثبت عکس ایراد کیفی روی دوربین نیاز داریم.",
+        "NSLocationWhenInUseUsageDescription": "برای ثبت موقعیت GPS محل ایراد نیاز داریم.",
+        "NSMicrophoneUsageDescription": "برای ثبت توضیح صوتی ایراد نیاز داریم."
+      }
+    },
+    "android": {
+      "package": "ir.sakhtban.qa",
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "RECORD_AUDIO"]
+    }
+  }
+}

@@ -17,8 +17,11 @@ class DefectCreate(BaseModel):
     category: str | None = None
     location: str
     photo_before_url: str | None = None
+    voice_note_url: str | None = None
     gps_lat: float | None = None
     gps_lng: float | None = None
+    floor_plan_x: float | None = None
+    floor_plan_y: float | None = None
     severity: DefectSeverity = DefectSeverity.MINOR
     due_date: date | None = None
 
@@ -32,6 +35,11 @@ class DefectOut(BaseModel):
     location: str
     photo_before_url: str | None
     photo_after_url: str | None
+    voice_note_url: str | None = None
+    gps_lat: float | None = None
+    gps_lng: float | None = None
+    floor_plan_x: float | None = None
+    floor_plan_y: float | None = None
     severity: DefectSeverity
     status: DefectStatus
     reopened_count: int

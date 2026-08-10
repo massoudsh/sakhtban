@@ -1,0 +1,57 @@
+# سخت‌بان QA — اپ موبایل ثبت ایراد (issue #22)
+
+اپ موبایل بومی React Native (با Expo) برای ثبت سریع ایراد کیفی در محل کارگاه:
+عکس، موقعیت (GPS + پین روی پلان طبقه)، توضیح متنی/صوتی، پیمانکار مسئول و شدت.
+
+## چرا React Native (Expo)
+
+- یک codebase برای iOS و اندروید — تیم فعلی پروژه از قبل روی TypeScript/React کار می‌کند (frontend وب هم Next.js/TS است)، پس منحنی یادگیری کمتر است.
+- Expo دسترسی آماده به دوربین (`expo-camera`)، GPS (`expo-location`) و ضبط صدا (`expo-av`) می‌دهد بدون نیاز به native module دستی.
+- برای MVP، build سرویس‌های ابری Expo (EAS) امکان توزیع build آزمایشی بدون نیاز به Xcode/Android Studio محلی را می‌دهد.
+
+## معماری آفلاین‌فرست
+
+مشکل اصلی که این ایشو حل می‌کند: «اینترنت ضعیف کارگاه». به همین دلیل:
+
+- هر ثبت ایراد اول تلاش می‌کند مستقیم به `POST /qa/defects` بفرستد (`src/lib/offlineQueue.ts#submitOrQueue`).
+- اگر آفلاین باشد یا درخواست شکست بخورد، آیتم در یک صف محلی (`AsyncStorage`) ذخیره می‌شود.
+- با `NetInfo`، هر بار اتصال برمی‌گردد صف به‌طور خودکار خالی می‌شود (`subscribeAutoFlush` در `App.tsx`).
+- کاربر همیشه می‌تواند صف را دستی هم خالی کند (بنر بالای صفحه‌ی ثبت ایراد).
+
+## محدودیت صادقانه: آپلود فایل
+
+`photo_before_url` و `voice_note_url` در این نسخه همان URI محلی دستگاه (فایل‌سیستم موبایل) است،
+نه لینک عمومی روی یک object storage. آپلود واقعی عکس/صدا به S3/MinIO یک تصمیم زیرساختی جداست
+(همان الگویی که در فرم وب هم برای `photo_before_url` استفاده شده — یک فیلد URL ساده، بدون سرویس
+آپلود پیاده‌شده). قبل از استفاده‌ی واقعی در کارگاه، باید:
+
+1. یک اندپوینت presigned-upload (یا مشابه) به بک‌اند اضافه شود.
+2. قبل از فراخوانی `POST /qa/defects`، فایل محلی به آن اندپوینت آپلود و URL عمومی جایگزین URI محلی شود.
+
+## اجرا (خارج از این محیط ابزار)
+
+این پروژه فقط **نوشته شده**، نه build/run‌شده — طبق قاعده‌ی پروژه، `npm install` و اجرای Expo باید
+روی سرور SSH یا ماشین توسعه انجام شود، نه داخل این کانتینر.
+
+```bash
+cd mobile
+npm install
+cp .env.example .env   # EXPO_PUBLIC_API_BASE_URL را به آدرس واقعی بک‌اند تنظیم کنید
+npx expo start
+```
+
+سپس با اپ Expo Go (یا شبیه‌ساز) اسکن/اجرا کنید.
+
+## فایل‌های کلیدی
+
+- `App.tsx` — navigation + شروع گوش‌دادن به صف آفلاین.
+- `src/lib/api.ts` — کلاینت fetch (معادل موبایل `frontend/src/lib/api.ts`).
+- `src/lib/offlineQueue.ts` — صف آفلاین + auto-flush.
+- `src/screens/NewDefectScreen.tsx` — صفحه‌ی اصلی ثبت ایراد (دوربین، GPS، پلان طبقه، صدا).
+- `src/components/FloorPlanPicker.tsx` — انتخاب موقعیت با لمس روی تصویر پلان.
+
+## وابستگی به بک‌اند
+
+از همان API موجود استفاده می‌کند؛ سه فیلد جدید برای این اپ به مدل `Defect` اضافه شد:
+`voice_note_url`، `floor_plan_x`، `floor_plan_y` (به‌روزرسانی در `backend/app/models/qa.py`،
+`backend/app/schemas/qa.py` و `backend/alembic/versions/25159ca33120_initial_schema.py`).
